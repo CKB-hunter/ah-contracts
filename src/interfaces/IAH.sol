@@ -10,19 +10,39 @@ pragma solidity ^0.4.24;
 interface IAH {
     /// @notice Entrust a tokenId of erc721
     /// @dev Called by seller
-    function entrust(address _erc721, uint256 _tokenId, uint256 _startingPrice) external payable;
+    /// @param _erc721 The address of the erc721 contract
+    /// @param _tokenId The id of the token
+    /// @param _startingPrice The staringPrice: unit: NATT
+    /// @param _type The end period of auction : block number or timestamp or both
+    /// @param _blockNum The block number
+    /// @param _timestamp The timestamp
+    function entrust(
+        address _erc721,
+        uint256 _tokenId,
+        uint256 _startingPrice,
+        uint8 _type,
+        uint _blockNum,
+        uint _timestamp
+    )
+        external payable;
 
     /// @notice Bid an offer for a tokenId of erc721
     /// @dev Called by bidder
-    function bidder(address _erc721, uint256 _tokenId, uint256 _offer) external payable;
+    /// @param _erc721 The address of the erc721 contract
+    /// @param _tokenId The id of the token
+    /// @param _offer The price that offered by sender: unit: NATT
+    function bid(
+        address _erc721,
+        uint256 _tokenId,
+        uint256 _offer
+    )
+        external payable;
 
-    /// @notice Sold a tokenId of erc721
-    /// @dev TBD How to do this? How to decide the auction result? called by front side?
-    function sold() external;
-
-    /// @notice Pass a tokenId of erc721. Give back the NFT
-    /// @dev TBD How to do this? How to decide the auction result???
-    function pass() external;
+    /// @notice Use the autoExec feature of CITA.
+    ///  Two results:
+    ///  1. Sold a tokenId of erc721
+    ///  2. Pass a tokenId of erc721. Give back the NFT
+    function autoExec() external;
 
     /// @notice Check the status of NFT
     function checkStatus(address _erc721, uint256 _tokenId) external returns (uint8);
@@ -34,6 +54,6 @@ interface IAH {
     function tokens(address _erc721) external returns (uint256[]);
 
     /// @notice Get the info of NFT
-    /// @return starting price and bidded price
-    function auctionInfo(address _erc721, uint256 _tokenId) external returns (uint256, uint256);
+    /// @return starting price, bidded price, status, type, blockNum, timestamp
+    function info(address _erc721, uint256 _tokenId) external returns (uint256, uint256, uint8, uint8, uint, uint);
 }
